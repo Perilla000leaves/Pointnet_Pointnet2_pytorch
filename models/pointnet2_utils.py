@@ -40,6 +40,7 @@ def square_distance(src, dst):
     return dist
 
 
+#
 def index_points(points, idx):
     """
 
@@ -50,9 +51,12 @@ def index_points(points, idx):
         new_points:, indexed points data, [B, S, C]
     """
     device = points.device
+    # 获取批量大小
     B = points.shape[0]
+    # view_shape[0]等于B，view_shape[1]等于S
     view_shape = list(idx.shape)
     view_shape[1:] = [1] * (len(view_shape) - 1)
+    
     repeat_shape = list(idx.shape)
     repeat_shape[0] = 1
     batch_indices = torch.arange(B, dtype=torch.long).to(device).view(view_shape).repeat(repeat_shape)
@@ -70,6 +74,7 @@ def farthest_point_sample(xyz, npoint):
     """
     device = xyz.device
     B, N, C = xyz.shape
+    # 创建一个全零的张量centroids，用于存储采样出的点的索引
     centroids = torch.zeros(B, npoint, dtype=torch.long).to(device)
     distance = torch.ones(B, N).to(device) * 1e10
     farthest = torch.randint(0, N, (B,), dtype=torch.long).to(device)
